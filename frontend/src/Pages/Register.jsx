@@ -2,18 +2,29 @@ import { useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { MdOutlineMail } from "react-icons/md";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { PiUserLight } from "react-icons/pi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { checkPassStrength } from "../Components/checkPassStrength";
 
 const Register = () => {
 
+    const [image, setImage] = useState(null);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passType, setPassType] = useState('password');
     const [showPass, setShowPass] = useState(false);
+    const [strength, setStrength] = useState('');
 
     const navigate = useNavigate();
+
+    const handlePassword = (e) => {
+        let pass = e.target.value;
+        setPassword(pass);
+        let str = checkPassStrength(pass);
+        setStrength(str);
+    }
 
     const handleShowPassword = () => {
         setPassType('text');
@@ -32,6 +43,16 @@ const Register = () => {
     const handleLogin = () => {
         navigate('/login');
     };
+
+    const handleFileInput = (e) => {
+        const file = e.target.files[0];
+        
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const url = URL.createObjectURL(file);
+        setImage(url);
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -68,6 +89,26 @@ const Register = () => {
                     </Button>
                 </AuthRoute>
 
+                {image ?
+                    <Image src={image} alt="user" /> :
+                    <PiUserLight
+                        style={{
+                            display: 'block',
+                            border: '2px solid',
+                            margin: 'auto',
+                            borderRadius: '50%',
+                            width: '100px',
+                            height: '100px',
+                            marginBottom: '20px',
+                        }}
+                    />
+                }
+
+                <File
+                    type="file"
+                    onChange={handleFileInput}
+                />
+
                 <Box>
                     <Input
                         autoFocus
@@ -97,7 +138,7 @@ const Register = () => {
                     <Input
                         type={passType}
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePassword}
                         placeholder="Enter Password"
                     />
                     {!showPass ?
@@ -117,6 +158,7 @@ const Register = () => {
                         />
                     }
                 </Box>
+                { password.length > 2 && <Message>password strength is: {strength}</Message> }
 
                 <Submit type="submit" value="Register" />
             </Form>
@@ -129,9 +171,9 @@ export default Register;
 
 const Main = styled.div`
   width: 100%;
-  height: 85vh;
+  height: 90vh;
   background: #FAFAFA;
-  padding-top: 70px;
+  padding-top: 30px;
 `
 
 const Form = styled.form`
@@ -162,6 +204,24 @@ const Button = styled.button`
   border-top-right-radius: ${(props) => props.right};
 `
 
+const Image = styled.img`
+  display: block;
+  margin: auto;
+  margin-bottom: 20px;
+  width: 100px;
+  height: 100px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+`
+
+const File = styled.input`
+  display: block;
+  width: 210px;
+  margin: auto;
+  font-size: 16px;
+`
+
 const Box = styled.div`
   border: 1px solid;
   width: 80%;
@@ -179,6 +239,13 @@ const Input = styled.input`
   border: 0;
   outline: 0;
   font-size: 17px;
+`
+
+const Message = styled.p`
+  width: 175px;
+  font-size: 13px;
+  font-style: Italic;
+  margin: 0px 25px;
 `
 
 const Submit = styled.input`

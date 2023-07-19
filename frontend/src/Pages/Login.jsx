@@ -115,7 +115,7 @@ const Main = styled.div`
   width: 100%;
   height: 85vh;
   background: #FAFAFA;
-  padding-top: 70px;
+  padding-top: 30px;
 `
 
 const Form = styled.form`
