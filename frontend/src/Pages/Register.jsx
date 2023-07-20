@@ -6,10 +6,12 @@ import { PiUserLight } from "react-icons/pi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { checkPassStrength } from "../Components/checkPassStrength";
+import axios from "axios";
 
 const Register = () => {
 
     const [image, setImage] = useState(null);
+    const [imgUrl, setImgUrl] = useState(null);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -46,9 +48,19 @@ const Register = () => {
 
     const handleFileInput = (e) => {
         const file = e.target.files[0];
-        
+
         const formData = new FormData();
         formData.append('image', file);
+
+        axios
+            .post('http://localhost:8080/auth/upload', formData)
+            .then((res) => {
+                console.log('res: ', res.data.data);
+                setImgUrl(res.data.data);
+            })
+            .catch((error) => {
+                console.log('error: ', error);
+            })
 
         const url = URL.createObjectURL(file);
         setImage(url);
@@ -57,13 +69,18 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (name && email && password) {
-            const payload = { name, email, password };
-            console.log('payload: ', payload);
+        if (imgUrl && name && email && password) {
+            if (strength === 'Strong') {
+                const payload = { imgUrl, name, email, password };
+                console.log('payload: ', payload);
 
-            setName('');
-            setEmail('');
-            setPassword('');
+                setImage(null);
+                setName('');
+                setEmail('');
+                setPassword('');
+            } else {
+                alert('password will be strong');
+            }
         } else {
             alert('All fields are required');
         }
@@ -158,7 +175,7 @@ const Register = () => {
                         />
                     }
                 </Box>
-                { password.length > 2 && <Message>password strength is: {strength}</Message> }
+                {password.length > 2 && <Message>password strength is: {strength}</Message>}
 
                 <Submit type="submit" value="Register" />
             </Form>
