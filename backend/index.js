@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 
-const { authRoute } = require('./routes/auth');
+const { authRoute } = require('./routes/authRoute');
 const { connection } = require('./connection/db');
 
 

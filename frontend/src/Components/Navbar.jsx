@@ -2,14 +2,19 @@ import styled from "styled-components";
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
 
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
+  const { auth } = useSelector((store) => store.AuthReducer);
+
+  // console.log('data: ', auth);
+
   return (
-    <Main style={ showMenu ? {
+    <Main style={showMenu ? {
       height: '11rem',
     } : {
       border: 'none'
@@ -51,7 +56,13 @@ const Navbar = () => {
       }
       {/* 3rd auth part */}
       <UserAuth>
-        <Anchor href="/register">Register/Login</Anchor>
+        {auth === null ?
+          <Anchor href="/register">Register/Login</Anchor> :
+          <UserInfo>
+            <User src={auth[0].imgUrl} />
+            {auth[0].name}
+          </UserInfo>
+        }
         {showMenu ?
           <Hambergur>
             <RxCross1 onClick={() => setShowMenu(!showMenu)} />
@@ -69,7 +80,6 @@ export default Navbar;
 
 
 const Main = styled.div`
-  border: 1px solid red;
   width: 100%;
   position: sticky;
   top: 0;
@@ -135,6 +145,20 @@ const UList = styled.ul`
 
 const List = styled.li`
   list-style: none;
+`
+
+const UserInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+`
+
+const User = styled.img`
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
 `
 
 const Anchor = styled.a`

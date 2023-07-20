@@ -1,12 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import axios from "axios";
+import styled from "styled-components";
+
 import { FiUser } from "react-icons/fi";
 import { MdOutlineMail } from "react-icons/md";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { PiUserLight } from "react-icons/pi";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+
 import { checkPassStrength } from "../Components/checkPassStrength";
-import axios from "axios";
+import { register } from "../Redux/Auth/action";
+
 
 const Register = () => {
 
@@ -20,6 +26,7 @@ const Register = () => {
     const [strength, setStrength] = useState('');
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handlePassword = (e) => {
         let pass = e.target.value;
@@ -55,7 +62,7 @@ const Register = () => {
         axios
             .post('http://localhost:8080/auth/upload', formData)
             .then((res) => {
-                console.log('res: ', res.data.data);
+                // console.log('res: ', res.data.data);
                 setImgUrl(res.data.data);
             })
             .catch((error) => {
@@ -72,7 +79,8 @@ const Register = () => {
         if (imgUrl && name && email && password) {
             if (strength === 'Strong') {
                 const payload = { imgUrl, name, email, password };
-                console.log('payload: ', payload);
+                dispatch(register(payload));
+                // console.log('payload: ', payload);
 
                 setImage(null);
                 setName('');

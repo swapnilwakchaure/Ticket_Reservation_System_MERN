@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 import { MdOutlineMail } from "react-icons/md";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { login } from "../Redux/Auth/action";
 
 const Login = () => {
 
@@ -12,6 +14,7 @@ const Login = () => {
     const [showPass, setShowPass] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleShowPassword = () => {
         setPassType('text');
@@ -36,7 +39,7 @@ const Login = () => {
 
         if (email && password) {
             const payload = { email, password };
-            console.log('payload: ', payload);
+            dispatch(login(payload));
 
             setEmail('');
             setPassword('');
